@@ -1,0 +1,168 @@
+@import "tailwindcss";
+
+/* --------------------------------------------------------------------- *
+ * PoolPay colour system ,single source of truth.
+ *
+ * `--color-navy` is sampled straight out of the logo artwork rather than
+ * eyeballed: every fully-opaque pixel of the mark in public/logo.webp
+ * decodes to exactly rgb(10, 24, 98), so that is the brand navy. It is
+ * the wordmark, the headings, the dark accents and the primary buttons.
+ *
+ * `--color-highlight` is the old accent. It is kept only as a secondary
+ * highlight (the "active" status badge) so that "active" and "success"
+ * stay visually distinct now that success is navy rather than green.
+ * Nothing else should reach for it.
+ *
+ * Prefer these tokens over `[#rawhex]` classes ,a token is one edit,
+ * a raw hex is forty.
+ * --------------------------------------------------------------------- */
+@theme {
+  /* brand */
+  --color-navy: #0a1862; /* exact logo navy ,hsl(230.45 81.48% 21.18%) */
+  --color-navy-hover: #0d2082; /* same hue+sat, lightness 21% → 28% */
+  --color-highlight: #3e52f3; /* secondary highlight only */
+
+  /* neutrals */
+  --color-ink: #111111; /* body copy */
+  --color-body: #4b5563; /* long-form docs prose */
+  --color-muted: #6b7280; /* labels, secondary copy */
+  --color-faint: #9ca3af; /* placeholders, eyebrows */
+  --color-hairline: #e5e7eb; /* borders, dividers */
+  --color-hairline-strong: #d1d5db; /* border on hover */
+  --color-surface: #f8f9fa; /* cards, wells */
+  --color-surface-alt: #f8fafc; /* alternating section bands */
+
+  /* functional ,deliberately NOT brand colours */
+  --color-danger: #ef4444;
+  --color-danger-strong: #dc2626;
+  --color-danger-deep: #b91c1c;
+  --color-warn: #f59e0b;
+  --color-warn-strong: #b45309;
+}
+
+:root {
+  color-scheme: light;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+html,
+body {
+  background-color: #ffffff;
+  color: var(--color-ink);
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Brand-tinted text selection, so even highlighting stays on-palette. */
+::selection {
+  background-color: color-mix(in srgb, var(--color-navy) 18%, transparent);
+}
+
+/* --------------------------------------------------------------------- *
+ * Decorative motion + backdrops for the marketing page.
+ *
+ * Everything here animates `transform` / `opacity` only, so it stays on
+ * the compositor and off the main thread. Framer Motion handles component
+ * entrances; these are the ambient pieces CSS does better.
+ * --------------------------------------------------------------------- */
+
+/* Slow drifting blurred blobs behind the hero. */
+@keyframes pp-drift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(0, -18px, 0) scale(1.07);
+  }
+}
+.pp-drift {
+  animation: pp-drift 16s ease-in-out infinite;
+  will-change: transform;
+}
+.pp-drift-rev {
+  animation: pp-drift 22s ease-in-out infinite reverse;
+  will-change: transform;
+}
+
+/* Faint engineering grid, faded out towards the edges so it never boxes
+   the hero in. */
+.pp-grid {
+  background-image:
+    linear-gradient(to right, color-mix(in srgb, var(--color-navy) 7%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in srgb, var(--color-navy) 7%, transparent) 1px, transparent 1px);
+  background-size: 56px 56px;
+  -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, #000 40%, transparent 100%);
+  mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, #000 40%, transparent 100%);
+}
+
+/* Skeleton shimmer ,a travelling highlight instead of a flat pulse, so
+   loading states read as "working" rather than "broken". */
+@keyframes pp-shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+.pp-shimmer::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background-image: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.65) 50%,
+    transparent 100%
+  );
+  animation: pp-shimmer 1.6s infinite;
+}
+
+/* Nav / inline links: underline grows from the left on hover. */
+.pp-underline {
+  position: relative;
+}
+.pp-underline::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -3px;
+  height: 1.5px;
+  width: 100%;
+  transform: scaleX(0);
+  transform-origin: left;
+  background-color: currentColor;
+  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.pp-underline:hover::after,
+.pp-underline:focus-visible::after {
+  transform: scaleX(1);
+}
+
+/* --------------------------------------------------------------------- *
+ * prefers-reduced-motion: the global kill switch.
+ *
+ * Framer Motion is additionally configured with `reducedMotion="user"` in
+ * main.tsx, which covers component entrances. This handles the CSS-driven
+ * pieces above plus smooth scrolling.
+ * --------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .pp-drift,
+  .pp-drift-rev,
+  .pp-shimmer::after {
+    animation: none !important;
+  }
+}

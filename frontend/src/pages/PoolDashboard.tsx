@@ -468,7 +468,7 @@ export default function PoolDashboard() {
   const lentOut = poolInfo?.lentOut ?? 0n;
   const closeBlocked = lentOut > 0n;
 
-  const shareUrl = `poolpay.xyz/pool/${poolIdParam}`;
+  const shareUrl = `poolpay.live/app/pool/${poolIdParam}`;
   async function copyShare() {
     // try/catch rather than `.catch()`: Chrome throws NotAllowedError
     // *synchronously* from writeText when the document isn't focused, so a

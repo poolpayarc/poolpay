@@ -394,7 +394,7 @@ export default function AppDashboard() {
                           already back in your wallet. */}
                       <span className="text-lg font-bold text-ink">
                         {!r.stats ? (
-                          stat(undefined, "w-20")
+                          stat(undefined, "w-0")
                         ) : r.stats.active ? (
                           usd(owed)
                         ) : (

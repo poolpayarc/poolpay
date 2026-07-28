@@ -455,7 +455,7 @@ export function NotApplicable({
 }) {
   return (
     <span className={`inline-flex items-baseline gap-1.5 text-muted ${className}`} title={title}>
-      <span aria-hidden="true">{NOT_APPLICABLE}</span>
+      //<span aria-hidden="true">{NOT_APPLICABLE}</span>
       <span className="text-xs font-normal">{label}</span>
     </span>
   );

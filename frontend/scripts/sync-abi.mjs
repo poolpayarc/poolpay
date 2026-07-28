@@ -6,8 +6,14 @@
  * the frontend ABIs are always whatever `forge build` last produced. Nothing
  * here should ever be edited by hand ,edit the contract and recompile.
  *
- * Exits non-zero if an artifact is missing (so a stale ABI can't quietly ship)
- * and prints a diff summary when something actually changed.
+ * A missing artifact just means Foundry hasn't run in this environment (e.g.
+ * Vercel, which only builds frontend/ and never sees contracts/out/) ,that's
+ * not an error, since the generated ABIs it would produce are already
+ * committed in src/config/abis/. It warns and skips instead of failing.
+ *
+ * An artifact that EXISTS but is unparseable/empty is still a hard failure:
+ * that means Foundry ran and produced something broken, which must not ship
+ * silently. Prints a diff summary when something actually changed.
  */
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
 import { dirname, resolve } from "node:path";
@@ -51,16 +57,14 @@ function summarise(abi) {
 mkdirSync(OUT_DIR, { recursive: true });
 
 let changed = 0;
+let skipped = 0;
 let failed = false;
 
 for (const { artifact, file, exportName } of TARGETS) {
   const artifactPath = resolve(REPO, artifact);
   if (!existsSync(artifactPath)) {
-    console.error(
-      `✗ sync-abi: missing artifact ${artifact}\n` +
-        `  Compile the contracts first:  cd contracts && forge build`,
-    );
-    failed = true;
+    console.warn("sync-abi: skipping, contract artifacts not found — using committed ABIs");
+    skipped++;
     continue;
   }
 
@@ -121,4 +125,8 @@ for (const { artifact, file, exportName } of TARGETS) {
 }
 
 if (failed) process.exit(1);
-console.log(changed === 0 ? "✓ sync-abi: ABIs already match the compiled contracts" : `✓ sync-abi: ${changed} file(s) regenerated`);
+if (skipped > 0 && changed === 0) {
+  console.log(`✓ sync-abi: skipped ${skipped} missing artifact(s) ,using committed ABIs`);
+} else {
+  console.log(changed === 0 ? "✓ sync-abi: ABIs already match the compiled contracts" : `✓ sync-abi: ${changed} file(s) regenerated`);
+}

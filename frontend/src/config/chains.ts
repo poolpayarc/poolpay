@@ -1,20 +1,20 @@
 import { defineChain } from "viem";
 
 /**
- * Arc Testnet ,custom EVM chain definition for wagmi / viem.
+ * Arc Network ,custom EVM chain definition for wagmi / viem.
  */
-export const arcTestnet = defineChain({
-  id: 5042002,
-  name: "Arc Testnet",
+export const arcNetwork = defineChain({
+  id: 5042,
+  name: "Arc Network",
   nativeCurrency: { name: "USDC", symbol: "USDC", decimals: 18 },
   rpcUrls: {
-    default: { http: ["https://rpc.testnet.arc.io"] },
+    default: { http: ["https://rpc.mainnet.arc.io"] },
   },
   blockExplorers: {
-    default: { name: "ArcScan", url: "https://testnet.arcscan.app" },
+    default: { name: "Arc Explorer", url: "https://explorer.arc.io" },
   },
   /**
-   * Multicall3 IS deployed on Arc Testnet at the canonical cross-chain
+   * Multicall3 IS deployed on Arc Network at the canonical cross-chain
    * address (verified: 3808 bytes of code, aggregate3 returns real data).
    * Earlier code assumed it was absent and left this out, so wagmi fell back
    * to one plain eth_call per read ,12+ per PoolDashboard load against an
@@ -28,5 +28,4 @@ export const arcTestnet = defineChain({
   contracts: {
     multicall3: { address: "0xcA11bde05977b3631167028862bE2a173976CA11" },
   },
-  testnet: true,
 });

@@ -25,8 +25,7 @@ import { POOLPAY_ADDRESS } from "../config/contracts";
 import { Wordmark } from "../components/ui";
 import { CountUp, Reveal, Stagger, StaggerItem } from "../components/motion";
 
-const FAUCET_URL = "https://faucet.circle.com";
-const ARCSCAN_URL = `https://testnet.arcscan.app/address/${POOLPAY_ADDRESS}`;
+const ARCSCAN_URL = `https://explorer.arc.io/address/${POOLPAY_ADDRESS}`;
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
@@ -67,7 +66,7 @@ const WHY = [
   {
     icon: Eye,
     title: "Every rupee accounted for",
-    desc: "Who deposited, who borrowed, who voted, what's owed ,all of it is onchain and verifiable on ArcScan. No spreadsheet, no trust required.",
+    desc: "Who deposited, who borrowed, who voted, what's owed ,all of it is onchain and verifiable on the Arc explorer. No spreadsheet, no trust required.",
   },
   {
     icon: Fuel,
@@ -102,7 +101,7 @@ const FAQ = [
   },
   {
     q: "Is this real money?",
-    a: "PoolPay is live on Arc Testnet, so it uses test USDC you can claim free from the faucet. Nothing here is mainnet money yet ,try it with a group and see how it feels.",
+    a: "Yes. PoolPay is live on Arc Network and every deposit, loan and repayment is real USDC, held by the pool's contract ,not by us. Start with amounts your group is comfortable with.",
   },
 ];
 
@@ -554,7 +553,7 @@ export default function LandingPage() {
             >
               <span className="inline-flex items-center gap-2 rounded-full border border-hairline bg-white/70 px-4 py-1.5 text-xs font-medium text-muted shadow-sm backdrop-blur">
                 <Sparkles className="h-3.5 w-3.5 text-navy" strokeWidth={2.2} aria-hidden="true" />
-                Live on Arc Network Testnet
+                Live on Arc Network
               </span>
             </motion.div>
 
@@ -801,8 +800,8 @@ export default function LandingPage() {
                   Start a pool with your circle
                 </h2>
                 <p className="mx-auto mt-4 max-w-xl text-base leading-relaxed text-white/70">
-                  PoolPay is live on Arc Testnet. Claim free test USDC, create a pool, and invite the
-                  group ,it takes a couple of minutes.
+                  PoolPay is live on Arc Network. Create a pool and invite the group ,it takes a
+                  couple of minutes.
                 </p>
                 <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
                   <Link
@@ -812,15 +811,6 @@ export default function LandingPage() {
                     Launch App
                     <ArrowRight className="h-4 w-4" strokeWidth={2.4} aria-hidden="true" />
                   </Link>
-                  <a
-                    href={FAUCET_URL}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-white/25 px-8 py-4 text-base font-semibold text-white transition-all duration-200 hover:bg-white/10 active:scale-[0.98] sm:w-auto"
-                  >
-                    <Droplets className="h-4 w-4" strokeWidth={2.2} aria-hidden="true" />
-                    Claim testnet USDC
-                  </a>
                 </div>
               </div>
             </div>
@@ -841,20 +831,12 @@ export default function LandingPage() {
                 Docs
               </Link>
               <a
-                href={FAUCET_URL}
-                target="_blank"
-                rel="noreferrer"
-                className="pp-underline transition-colors hover:text-navy"
-              >
-                Faucet
-              </a>
-              <a
                 href={ARCSCAN_URL}
                 target="_blank"
                 rel="noreferrer"
                 className="pp-underline transition-colors hover:text-navy"
               >
-                ArcScan
+                Explorer
               </a>
               <Link to="/app" className="pp-underline transition-colors hover:text-navy">
                 Launch App
@@ -863,7 +845,6 @@ export default function LandingPage() {
           </div>
           <div className="mt-8 flex flex-col items-center justify-between gap-3 border-t border-hairline pt-6 text-xs text-faint sm:flex-row">
             <span>Built on Arc Network · Non-custodial · Open source</span>
-            <span>Testnet only ,not real funds.</span>
             <span><a href="https://x.com/Kriyeto" target="_blank" rel="noopener noreferrer" className="hover:text-[#3e52f3] transition">Built by @Kriyeto</a></span>
           </div>
         </div>

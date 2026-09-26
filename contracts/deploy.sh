@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Deploy the PoolPay contract to Arc Testnet.
+# Deploy the PoolPay contract to Arc Network (mainnet).
 #
 # The deployer's private key is read from the PRIVATE_KEY environment variable so it is
 # never hardcoded in any file. Export it before running this script:
@@ -10,7 +10,7 @@
 #
 set -euo pipefail
 
-ARC_TESTNET_RPC_URL="https://rpc.testnet.arc.io"
+ARC_RPC_URL="https://rpc.mainnet.arc.io"
 
 if [ -z "${PRIVATE_KEY:-}" ]; then
   echo "Error: PRIVATE_KEY environment variable is not set." >&2
@@ -19,6 +19,6 @@ if [ -z "${PRIVATE_KEY:-}" ]; then
 fi
 
 forge script script/DeployPoolPay.s.sol \
-  --rpc-url "$ARC_TESTNET_RPC_URL" \
+  --rpc-url "$ARC_RPC_URL" \
   --broadcast \
   --private-key "$PRIVATE_KEY"

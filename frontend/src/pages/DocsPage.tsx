@@ -6,7 +6,6 @@ import { Reveal } from "../components/motion";
 import {
   ArrowRight,
   BookOpen,
-  Droplets,
   FileCode2,
   HandCoins,
   Landmark,
@@ -18,9 +17,8 @@ import {
   Vote,
 } from "lucide-react";
 
-const FAUCET_URL = "https://faucet.circle.com";
-const EXPLORER_URL = "https://testnet.arcscan.app";
-const CHAIN_ID = 5042002;
+const EXPLORER_URL = "https://explorer.arc.io";
+const CHAIN_ID = 5042;
 const ARCSCAN_URL = `${EXPLORER_URL}/address/${POOLPAY_ADDRESS}`;
 
 const btnPrimary =
@@ -46,7 +44,7 @@ const ADDRESSES: { label: string; value: string; href?: string }[] = [
     value: POOLPAY_VIEW_ADDRESS,
     href: `${EXPLORER_URL}/address/${POOLPAY_VIEW_ADDRESS}`,
   },
-  { label: "Network", value: `Arc Testnet (Chain ID: ${CHAIN_ID})` },
+  { label: "Network", value: `Arc Network (Chain ID: ${CHAIN_ID})` },
   { label: "USDC", value: USDC_ADDRESS, href: `${EXPLORER_URL}/address/${USDC_ADDRESS}` },
   { label: "Explorer", value: EXPLORER_URL, href: EXPLORER_URL },
 ];
@@ -88,15 +86,6 @@ export default function DocsPage() {
             >
               Docs
             </Link>
-            <a
-              href={FAUCET_URL}
-              target="_blank"
-              rel="noreferrer"
-              className="pp-underline hidden items-center gap-1.5 text-sm font-medium text-muted transition-colors hover:text-navy sm:inline-flex"
-            >
-              <Droplets className="h-3.5 w-3.5" strokeWidth={2.2} aria-hidden="true" />
-              Faucet
-            </a>
             <Link to="/app" className={`${btnPrimary} px-5 py-2.5 text-sm`}>
               Launch App
               <ArrowRight className="h-4 w-4" strokeWidth={2.4} aria-hidden="true" />
@@ -243,7 +232,7 @@ export default function DocsPage() {
                   <p>
                     PoolPay is fully non-custodial. Funds are held by the smart contract on Arc
                     Network, not by any company or individual. All transactions are transparent and
-                    verifiable on ArcScan. Key security features:
+                    verifiable on the Arc explorer. Key security features:
                   </p>
                   <Bullets
                     items={[
@@ -256,7 +245,7 @@ export default function DocsPage() {
                 </Section>
 
                 <Section id="contract-addresses" title="Smart Contract Addresses">
-                  <p>All PoolPay contracts are deployed and verifiable on Arc Testnet.</p>
+                  <p>All PoolPay contracts are deployed and verifiable on Arc Network.</p>
                   <div className="overflow-x-auto rounded-xl border border-hairline bg-surface p-4 font-mono text-sm">
                     <div className="space-y-2">
                       {ADDRESSES.map((a) => (
@@ -296,11 +285,8 @@ export default function DocsPage() {
             <Link to="/docs" className="transition hover:text-ink">
               Docs
             </Link>
-            <a href={FAUCET_URL} target="_blank" rel="noreferrer" className="transition hover:text-ink">
-              Faucet
-            </a>
             <a href={ARCSCAN_URL} target="_blank" rel="noreferrer" className="transition hover:text-ink">
-              ArcScan
+              Explorer
             </a>
           </div>
           <div>Built on Arc Network</div>

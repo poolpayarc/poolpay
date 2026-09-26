@@ -12,12 +12,11 @@ import {
 } from "@rainbow-me/rainbowkit/wallets";
 import { BrowserRouter } from "react-router-dom";
 import { MotionConfig } from "framer-motion";
-import { fallback } from "viem";
 import "@rainbow-me/rainbowkit/styles.css";
 import "./index.css";
 import App from "./App.tsx";
 import { ToastProvider } from "./components/toast";
-import { arcTestnet } from "./config/chains";
+import { arcNetwork } from "./config/chains";
 import { BRAND } from "./config/brand";
 import { TIMEOUT_MS, pacedHttp } from "./config/rpcTransport";
 
@@ -84,43 +83,23 @@ const connectors = connectorsForWallets(
  * string to `fetch()` when `new URL()` can't parse it, so `/arc-rpc`
  * resolves against whatever origin the dev server is on (port included).
  *
- * Endpoint choice is measured, and an earlier note here had it backwards.
- * Under a 12-concurrent-call burst: drpc 12/12 ok, the official endpoint
- * 7/12, quicknode 2/12 (10 throttled). So drpc ,previously dropped for
- * supposedly answering 429s ,is the most resilient of the three and is now
- * the failover; quicknode, previously the failover, was the worst. The
- * fallback itself retries zero times so a bad moment can't fan out.
- *
  * PRODUCTION routes through api/arc-rpc.ts, the same-origin serverless
  * equivalent of the dev proxy below. Arc sits behind Cloudflare, whose
  * throttle responses are edge-generated WITHOUT `Access-Control-Allow-Origin`
  * ,so a direct browser → Arc call surfaces a rate-limited read as an opaque
  * CORS failure rather than the 429 underneath. Same-origin sidesteps that.
- * The `endpoint` query param tells the function which upstream to hit, so
- * the failover order below still matches (drpc first, then official).
+ * Both paths reach the single mainnet endpoint, https://rpc.mainnet.arc.io.
  */
 const ARC_RPC_PROXY_PATH = "/arc-rpc"; // must match vite.config.ts
 const ARC_RPC_FN_PATH = "/api/arc-rpc"; // must match frontend/api/arc-rpc.ts
-/**
- * Failover order, chosen by measurement rather than assumption. Under a
- * 12-concurrent-call burst: drpc 12/12 succeeded, the official endpoint 7/12,
- * and quicknode only 2/12 (10 throttled). quicknode was the previous failover
- * and was the worst of the three ,replaced.
- */
-const arcTransport = import.meta.env.PROD
-  ? fallback(
-      [
-        pacedHttp(`${ARC_RPC_FN_PATH}?endpoint=primary`, { timeout: TIMEOUT_MS }),
-        pacedHttp(`${ARC_RPC_FN_PATH}?endpoint=failover`, { timeout: TIMEOUT_MS }),
-      ],
-      { retryCount: 0 },
-    )
-  : pacedHttp(ARC_RPC_PROXY_PATH, { timeout: TIMEOUT_MS });
+const arcTransport = pacedHttp(import.meta.env.PROD ? ARC_RPC_FN_PATH : ARC_RPC_PROXY_PATH, {
+  timeout: TIMEOUT_MS,
+});
 
 const config = createConfig({
-  chains: [arcTestnet],
+  chains: [arcNetwork],
   connectors,
-  transports: { [arcTestnet.id]: arcTransport },
+  transports: { [arcNetwork.id]: arcTransport },
   ssr: false,
 });
 

@@ -5,7 +5,7 @@ import tailwindcss from '@tailwindcss/vite'
 /**
  * `/arc-rpc` → Arc's public JSON-RPC, proxied by the dev server.
  *
- * Why proxy at all, given that rpc.testnet.arc.io *does* answer preflights
+ * Why proxy at all, given that rpc.mainnet.arc.io *does* answer preflights
  * with a correct `Access-Control-Allow-Origin` on the happy path: it sits
  * behind Cloudflare (`server: cloudflare`, `__cf_bm`), and Cloudflare's own
  * rate-limit / bot-management responses are generated at the edge without
@@ -19,7 +19,7 @@ import tailwindcss from '@tailwindcss/vite'
  * the true status codes observable (see `configure` below).
  *
  * `rewrite` is required: without it a request for `/arc-rpc` would be
- * forwarded to `https://rpc.testnet.arc.io/arc-rpc`. The RPC lives at the
+ * forwarded to `https://rpc.mainnet.arc.io/arc-rpc`. The RPC lives at the
  * root, so the prefix is stripped back to `/`.
  *
  * Keep the path in step with ARC_RPC_PROXY_PATH in src/main.tsx.
@@ -32,7 +32,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/arc-rpc': {
-        target: 'https://rpc.testnet.arc.io',
+        target: 'https://rpc.mainnet.arc.io',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/arc-rpc/, '') || '/',
         // Surface upstream throttling in the terminal. Once proxied, a 429

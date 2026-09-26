@@ -1,5 +1,5 @@
 import { useAccount, useSwitchChain } from "wagmi";
-import { arcTestnet } from "../config/chains";
+import { arcNetwork } from "../config/chains";
 
 /**
  * Wallets can sit on any chain. Every read here is scoped to Arc by the wagmi
@@ -14,15 +14,15 @@ export function useWrongNetwork() {
   const { isConnected, chainId } = useAccount();
   const { switchChain, isPending, error } = useSwitchChain();
 
-  const wrong = isConnected && chainId !== undefined && chainId !== arcTestnet.id;
+  const wrong = isConnected && chainId !== undefined && chainId !== arcNetwork.id;
 
   return {
     wrong,
     chainId,
-    expectedChainId: arcTestnet.id,
-    expectedName: arcTestnet.name,
+    expectedChainId: arcNetwork.id,
+    expectedName: arcNetwork.name,
     switching: isPending,
     error,
-    switchToArc: () => switchChain({ chainId: arcTestnet.id }),
+    switchToArc: () => switchChain({ chainId: arcNetwork.id }),
   };
 }

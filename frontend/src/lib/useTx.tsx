@@ -4,7 +4,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import type { Hex } from "viem";
 import { decodeTxError, isContractRevert } from "./errors";
 import { useToast } from "../components/toast-context";
-import { arcTestnet } from "../config/chains";
+import { arcNetwork } from "../config/chains";
 import { useWrongNetwork } from "./useWrongNetwork";
 import { truncate } from "./format";
 
@@ -30,9 +30,9 @@ import { truncate } from "./format";
 
 export type TxStage = "idle" | "checking" | "signing" | "confirming" | "success" | "error";
 
-const EXPLORER = arcTestnet.blockExplorers?.default.url;
+const EXPLORER = arcNetwork.blockExplorers?.default.url;
 
-/** Toast body linking the tx on ArcScan. Not a component ,just markup. */
+/** Toast body linking the tx on the Arc explorer. Not a component ,just markup. */
 function txLink(hash: Hex) {
   if (!EXPLORER) return <span className="font-mono">{truncate(hash)}</span>;
   return (
@@ -174,7 +174,7 @@ export function useTx({ action, successTitle, successMessage, onConfirmed }: Use
       toast.update(toastId.current, {
         kind: "success",
         title: successTitle ?? "Transaction confirmed",
-        // Always keep the ArcScan link ,a custom successMessage sits above it
+        // Always keep the explorer link ,a custom successMessage sits above it
         // rather than replacing it, so every confirmed tx stays inspectable.
         message: (
           <>

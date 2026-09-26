@@ -9,30 +9,19 @@ export const config = { runtime: "edge" };
  * browser as an opaque CORS failure instead of the 429 underneath. Routing
  * through this same-origin function sidesteps that: the browser only ever
  * talks to its own origin, and the true upstream status code comes through.
- *
- * `endpoint=failover` selects the drpc endpoint. Keep both entries in sync
- * with ARC_RPC_URL / ARC_RPC_FAILOVER_URL in src/main.tsx ,client-side
- * `fallback()` picks between them by requesting this function with each
- * query value, so the measured failover order (drpc first, then official) is
- * unchanged from before this proxy existed.
  */
-const UPSTREAMS = {
-  primary: "https://rpc.testnet.arc.io",
-  failover: "https://rpc.drpc.testnet.arc.io",
-} as const;
+const UPSTREAM = "https://rpc.mainnet.arc.io";
 
 export default async function handler(request: Request): Promise<Response> {
   if (request.method !== "POST") {
     return new Response("Method Not Allowed", { status: 405 });
   }
 
-  const endpointParam = new URL(request.url).searchParams.get("endpoint");
-  const upstream = endpointParam === "failover" ? UPSTREAMS.failover : UPSTREAMS.primary;
   const body = await request.text();
 
   let upstreamRes: Response;
   try {
-    upstreamRes = await fetch(upstream, {
+    upstreamRes = await fetch(UPSTREAM, {
       method: "POST",
       headers: { "content-type": "application/json" },
       body,
